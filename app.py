@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+import click
 from flask import Flask
 
 # Init with default config
@@ -11,12 +13,14 @@ app.config.update(dict(
 ))
 
 
-def run():
+@click.command()
+@click.option('--port', default=8888, metavar='<portNum>', show_default=True)
+@click.option('--debug', default=False, is_flag=True, metavar='')
+def run(port, debug):
     """
-    Entry point to execute script
-    Forwards call to run web sever
+    Entry point to execute script (runs the web server)
     """
-    return init_api()
+    return init_api(port, debug)
 
 
 def init_api(port=8888, debug=False):
