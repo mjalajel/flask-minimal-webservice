@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 import click
-from flask import Flask
+import json
+from flask import Flask, request
+
 
 # Init with default config
 app = Flask(__name__)
-app.config.update(dict(
-    headers={
-        'Access-Control-Allow-Origin': '*',
-        'content-type': 'application/json; charset=utf-8'
-    }
-))
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'content-type': 'application/json; charset=utf-8'
+}
 
 
 @click.command()
@@ -29,6 +29,18 @@ def init_api(port=8888, debug=False):
     """
     app.logger.info("Starting api with config: " + str(app.config))
     app.run(host='0.0.0.0', port=port, debug=debug, threaded=True)
+
+
+@app.route("/")
+def ask():
+    text = request.args.get('text', '<default-text>')
+    response = {
+        "status": "ok",
+        "input": request.args,
+        "text-input": text,
+        "output": "All Good :)"
+    }
+    return (json.dumps(response), 200, HEADERS)
 
 if __name__ == '__main__':
     run()
